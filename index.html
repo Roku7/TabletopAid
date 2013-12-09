@@ -1,0 +1,369 @@
+<!DOCTYPE HTML>
+<html lang = "en">
+<head>
+	<!-- Tabletop Aid App -->
+	<title>Dice Roller</title>
+	<meta charset = "UTF-8" />
+	<meta name = "viewport"
+	   content = "user-scalable=no, width=device-width" />
+	<link rel = "stylesheet"
+	     type = "text/css"
+	     href = "jquery.mobile-1.3.2.min.css"/>
+	<script src="jquery-1.9.1.js"></script>
+	<script src="jquery.mobile-1.3.2.min.js"></script>
+
+</head>
+<body>
+<div data-role = "page" data-theme = "a">
+	<div data-role = "header"
+	 data-position = "fixed">
+		<h1>Tabletop Aid</h1>
+	</div>
+	<div data-role = "content"
+	         align = "center">
+		<!-- Decreases duration of status effects and spells -->
+		<script>
+		function nextRound()
+		{
+			var statusDuration01 = document.getElementById("roundSlider01").value;
+			var statusDuration02 = document.getElementById("roundSlider02").value;
+			var spellDuration01 = document.getElementById("roundSpellSlider01").value;
+			var spellDuration02 = document.getElementById("roundSpellSlider02").value;
+			
+			if (statusDuration01 > 0)
+			{
+				$('#roundSlider01').val(statusDuration01 - 1);
+				$('#roundSlider01').slider('refresh');
+			}
+			if (statusDuration02 > 0)
+			{
+				$('#roundSlider02').val(statusDuration02 - 1);
+				$('#roundSlider02').slider('refresh');
+			}
+			if (spellDuration01 > 0)
+			{
+				$('#roundSpellSlider01').val(spellDuration01 - 1);
+				$('#roundSpellSlider01').slider('refresh');
+			}
+			if (spellDuration02 > 0)
+			{
+				$('#roundSpellSlider02').val(spellDuration02 - 1);
+				$('#roundSpellSlider02').slider('refresh');
+			}
+		}
+		</script>
+				
+		<!-- Button that will decrease duration of effects -->
+		<a href = "#" data-role = "button" data-inline = "true"  data-theme = "b"
+			onclick = "nextRound()">Next Round</a>
+			
+		<div data-role = "collapsible-set" data-content-theme = "c">
+		<!-- Dice Roller -->
+		<div data-role = "collapsible">
+			<h3>Dice</h3>
+			<!-- Allow user to select number of dice -->
+			<label for = "diceSlider">Number of Dice:</label>
+			<input type = "range"
+				   name = "diceSlider"
+				     id = "diceSlider"
+				  value = "1"
+					min = "1"
+					max = "20"></input>
+			 
+			<!-- Allow user to select type of dice rolled -->
+			<label for = "diceType" class = "select">Type of Dice</label>
+			<select name = "diceType" id = "diceType">
+				<option value = "4">d4</option>
+				<option value = "6">d6</option>
+				<option value = "8">d8</option>
+				<option value = "10">d10</option>
+				<option value = "12">d12</option>
+				<option value = "20">d20</option>
+				<option value = "100">d100</option>
+			</select>
+
+			<!-- Calculates dice roll -->
+			<script>
+			function rollDice()
+			{
+				var numOfDice = document.getElementById("diceSlider").value;
+				var numOfSides = document.getElementById("diceType").value;
+				var totalResults = "";
+				var diceRoll = 0;
+				var diceTotal = 0;
+				for (var i = 1; i <= numOfDice; i++)
+				{
+					diceRoll = Math.floor((Math.random() * numOfSides) + 1);
+					diceTotal += diceRoll;
+					if (numOfDice == 1)
+					{
+						totalResults = diceRoll;
+					}
+					else if (i < numOfDice)
+					{
+						totalResults += diceRoll;
+						if (numOfDice > 2)
+						{
+							totalResults += ", ";
+						}
+					}
+					else
+					{
+						totalResults += " and " + diceRoll;
+					}
+				}
+				if (numOfDice == 1)
+					document.getElementById("diceResult").innerHTML = "You rolled a " + diceTotal + ".";
+				else
+					document.getElementById("diceResult").innerHTML = "You rolled a " + totalResults + " for a total of " + diceTotal + ".";
+			}
+			</script>
+
+			<!-- Button that will start dice roll -->
+			<a href     = "#dicePanel"
+			  data-role = "button"
+			data-inline = "true"
+			 data-theme = "b"
+				onclick = "rollDice()">Roll Dice
+			</a>
+			<div data-role = "panel" id = "dicePanel" data-position = "right" data-display = "overlay">
+				<!-- The following line will display the dice roll result. -->
+				<p id = "diceResult">Press the "Roll Dice" button when ready.</p>
+			</div>
+		</div> <!-- End of Dice Roller -->
+
+		<!-- Hit Points -->
+		<div data-role = "collapsible">
+			<h3>Hit Points</h3>		
+			<label for = "currentHP">Current Hit Points:</label>
+			<input type = "number" id = "currentHP"></input>
+			
+			<label for = "tempHP">Temporary Hit Points:</label>
+			<input type = "number" id = "tempHP" data-clear-btn = "true"></input>
+		</div> <!-- End of Hit Points -->
+		
+		<!-- Status Effects -->
+		<div data-role = "collapsible">
+			<h3>Status Effects</h3>
+			<label for = "seffect01">Status Effect Name:</label>
+			<input type = "text" id = "seffect01" data-clear-btn = "true"></input>
+			<label for = "roundSlider01">Duration:</label>
+			<input type = "range" name = "roundSlider01" id = "roundSlider01" value = "0" min = "0" max = "20"></input>
+			<hr>
+			<label for = "seffect02">Status Effect Name:</label>
+			<input type = "text" id = "seffect02" data-clear-btn = "true"></input>
+			<label for = "roundSlider02">Duration:</label>
+			<input type = "range" name = "roundSlider02" id = "roundSlider02" value = "0" min = "0" max = "20"></input>
+			
+		</div> <!-- End of Status Effects -->
+		
+		<!-- Ammunition -->
+		<div data-role = "collapsible">
+			<h3>Ammunition</h3>
+			<!-- Decreases amount of ammo in slot 1 -->
+			<script>
+			function useAmmo01()
+			{
+				var ammo01 = document.getElementById("ammoLeft01").value;
+				
+				if (ammo01 > 0)
+				{
+					$('#ammoLeft01').val(ammo01 - 1);
+					$('#ammoLeft01').slider('refresh');
+				}
+			}
+			</script>
+			<!-- Decreases amount of ammo in slot 2 -->
+			<script>
+			function useAmmo02()
+			{
+				var ammo02 = document.getElementById("ammoLeft02").value;
+				
+				if (ammo02 > 0)
+				{
+					$('#ammoLeft02').val(ammo02 - 1);
+					$('#ammoLeft02').slider('refresh');
+				}
+			}
+			</script>
+			
+			<label for = "ammoType01" class = "select">Type</label>
+			<select name = "ammoType01" id = "ammoType01" data-theme = "b">
+				<option value = "arrow">Arrows</option>
+				<option value = "bolt">Bolts</option>
+				<option value = "throwing">Throwing Weapon</option>
+				<option value = "special01">Special Ammo 1</option>
+				<option value = "special02">Special Ammo 2</option>
+			</select>
+			<label for = "ammoLeft01">Quantity</label>
+			<input type = "range" id = "ammoLeft01" value = "0" min = "0" max = "40"></input>
+			
+			<!-- Button that will decrease amount of ammo in slot 1 -->
+			<a href = "#" data-role = "button" data-inline = "true"  data-theme = "b"
+				onclick = "useAmmo01()">Use</a>
+				
+			<hr>
+			
+			<label for = "ammoType02" class = "select">Type</label>
+			<select name = "ammoType02" id = "ammoType02" data-theme = "b">
+				<option value = "arrow">Arrows</option>
+				<option value = "bolt">Bolts</option>
+				<option value = "throwing">Throwing Weapon</option>
+				<option value = "special01">Special Ammo 1</option>
+				<option value = "special02">Special Ammo 2</option>
+			</select>
+			<label for = "ammoLeft02">Quantity</label>
+			<input type = "range" id = "ammoLeft02" value = "0" min = "0" max = "40"></input>
+			
+			<!-- Button that will decrease amount of ammo in slot 2 -->
+			<a href = "#" data-role = "button" data-inline = "true"  data-theme = "b"
+				onclick = "useAmmo02()">Use</a>
+		</div> <!-- End of Ammunition -->
+
+		<!-- Spell Slots -->
+		<div data-role = "collapsible">
+			<h3>Spell Slots</h3>
+			<!-- Caster Level -->
+			<label for = "casterLevel">Caster Level</label>
+			<input type = "range" id = "casterLevel" data-theme = "b" value = "1" min = "1" max = "20"></input>
+
+			<!-- Will automatically set spell slots to given value on button push -->
+			<script>
+			function resetSpellSlots()
+			{
+				var casterLevel = document.getElementById("casterLevel").value;
+				
+				<!-- Set zero values for proper levels -->
+				if (casterLevel < 3)
+					$('#spellLevel02').val(0);
+				if (casterLevel < 5)
+					$('#spellLevel03').val(0);
+				if (casterLevel < 7)
+					$('#spellLevel04').val(0);
+				if (casterLevel < 9)
+					$('#spellLevel05').val(0);
+				if (casterLevel < 11)
+					$('#spellLevel06').val(0);
+				if (casterLevel < 13)
+					$('#spellLevel07').val(0);
+				if (casterLevel < 15)
+					$('#spellLevel08').val(0);
+				if (casterLevel < 17)
+					$('#spellLevel09').val(0);
+				
+				<!-- Spell Level 1 slots -->
+				if (casterLevel == 1)
+					$('#spellLevel01').val(2);
+				else if (casterLevel == 2)
+					$('#spellLevel01').val(3);
+				else if (casterLevel >= 3)
+					$('#spellLevel01').val(4);
+				
+				<!-- Spell Level 2 slots -->
+				if (casterLevel == 3)
+					$('#spellLevel02').val(2);
+				else if (casterLevel >= 4)
+					$('#spellLevel02').val(3);
+				
+				<!-- Spell Level 3 slots -->
+				if (casterLevel == 5)
+					$('#spellLevel03').val(2);
+				else if (casterLevel >= 6)
+					$('#spellLevel03').val(3);
+				
+				<!-- Spell Level 4 slots -->
+				if (casterLevel == 7)
+					$('#spellLevel04').val(1);
+				else if (casterLevel == 8)
+					$('#spellLevel04').val(2);
+				else if (casterLevel >= 9)
+					$('#spellLevel04').val(3);
+				
+				<!-- Spell Level 5 slots -->
+				if (casterLevel == 9)
+					$('#spellLevel05').val(1);
+				else if (casterLevel >= 10)
+					$('#spellLevel05').val(2);
+				
+				<!-- Spell Level 6 slots -->
+				if (casterLevel >= 11)
+					$('#spellLevel06').val(1);
+				<!-- Spell Level 7 slots -->
+				if (casterLevel >= 13)
+					$('#spellLevel07').val(1);
+				<!-- Spell Level 8 slots -->
+				if (casterLevel >= 15)
+					$('#spellLevel08').val(1);
+				<!-- Spell Level 9 slots -->
+				if (casterLevel >= 17)
+					$('#spellLevel09').val(1);
+
+				<!-- Refresh spell slot sliders -->
+				$('#spellLevel01').slider('refresh');
+				$('#spellLevel02').slider('refresh');
+				$('#spellLevel03').slider('refresh');
+				$('#spellLevel04').slider('refresh');
+				$('#spellLevel05').slider('refresh');
+				$('#spellLevel06').slider('refresh');
+				$('#spellLevel07').slider('refresh');
+				$('#spellLevel08').slider('refresh');
+				$('#spellLevel09').slider('refresh');
+			}
+			</script>
+			
+			<!-- Button that reset spell slots -->
+			<a href = "#" data-role = "button" data-inline = "true"  data-theme = "b"
+				onclick = "resetSpellSlots()">Reset Spell Slots</a>
+			
+			<!-- Spell Levels -->
+			<label for = "spellLevel01">1st Level</label>
+			<input type = "range" id = "spellLevel01" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel02">2nd Level</label>
+			<input type = "range" id = "spellLevel02" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel03">3rd Level</label>
+			<input type = "range" id = "spellLevel03" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel04">4th Level</label>
+			<input type = "range" id = "spellLevel04" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel05">5th Level</label>
+			<input type = "range" id = "spellLevel05" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel06">6th Level</label>
+			<input type = "range" id = "spellLevel06" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel07">7th Level</label>
+			<input type = "range" id = "spellLevel07" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel08">8th Level</label>
+			<input type = "range" id = "spellLevel08" value = "0" min = "0" max = "5"></input>
+			
+			<label for = "spellLevel09">9th Level</label>
+			<input type = "range" id = "spellLevel09" value = "0" min = "0" max = "5"></input>
+			
+		</div> <!-- End of Spell Slots -->
+
+		<!-- Spell Durations -->
+		<div data-role = "collapsible">
+			<h3>Spell Durations</h3>
+			<label for = "spell01">Spell Name:</label>
+			<input type = "text" id = "spell01" data-clear-btn = "true"></input>
+			<label for = "roundSpellSlider01">Duration:</label>
+			<input type = "range" name = "roundSpellSlider01" id = "roundSpellSlider01" value = "0" min = "0" max = "20"></input>
+			<hr>
+			<label for = "spell02">Spell Name:</label>
+			<input type = "text" id = "spell02" data-clear-btn = "true"></input>
+			<label for = "roundSpellSlider02">Duration:</label>
+			<input type = "range" name = "roundSpellSlider02" id = "roundSpellSlider02" value = "0" min = "0" max = "20"></input>
+			
+		</div> <!-- End of Status Effects -->
+
+		</div> <!-- End of collapsible set -->
+	</div>
+
+</div>
+
+</body>
+</html>
